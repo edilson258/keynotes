@@ -1,86 +1,58 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { AiOutlinePlus } from "react-icons/ai";
+import { BiTrashAlt } from "react-icons/bi";
+import { MdEdit } from "react-icons/md";
 
-const Home: NextPage = () => {
+function NoteCard() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
+    <div className="text-slate-600 relative shadow p-4 pt-8 pb-1 rounded">
+      <p className="absolute text-white font-bold bg-slate-700 px-1 top-0 left-0 rounded-tl rounded-br">
+        1
+      </p>
+      <h1 className="font-semibold text-2xl">Note Title</h1>
+      <p className="opacity-80">This is just the body of the note</p>
+      <div className="text-xl border-t my-2 py-2 flex gap-2">
+        <button className="px-3 border rounded text-red-500 border-red-500">
+          <BiTrashAlt />
+        </button>
+        <button className="flex justify-center gap-1.5 items-center px-3 border rounded text-white bg-sky-400 border-sky-400">
+          Edit
+          <MdEdit />
+        </button>
+      </div>
     </div>
-  )
+  );
 }
 
-export default Home
+const Home = () => {
+  const router = useRouter();
+
+  return (
+    <>
+      <Head>
+        <title>My Notes</title>
+      </Head>
+
+      <main className="container relative mx-auto py-8 text-slate-700 max-h-vh">
+        <h1 className="text-center text-4xl font-bold">Key Notes</h1>
+
+        <div
+          className="fixed bottom-16 right-4 bg-sky-500 p-4 rounded-full shadow-lg shadow-sky-500/50 z-10"
+          onClick={() => router.push("/addnote")}
+        >
+          <AiOutlinePlus className="text-2xl text-white" />
+        </div>
+
+        <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">
+          <NoteCard />
+          <NoteCard />
+          <NoteCard />
+          <NoteCard />
+        </div>
+      </main>
+    </>
+  );
+};
+
+export default Home;
