@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiTrashAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
+import { FaBoxOpen } from "react-icons/fa";
 import INote from "../interfaces/INote";
 import { deleteUserNote, getAllUserNotes } from "../services/firebaseService";
 
@@ -57,22 +58,39 @@ const Home = ({ notes }: { notes: INote[] }) => {
       <main className="container relative mx-auto py-8 text-slate-700 max-h-vh">
         <h1 className="text-center text-4xl font-bold">Key Notes</h1>
 
-        <div
-          className="fixed bottom-16 right-4 bg-sky-500 p-4 rounded-full shadow-lg shadow-sky-500/50 z-10"
-          onClick={() => router.push("/addnote")}
-        >
-          <AiOutlinePlus className="text-2xl text-white" />
-        </div>
+        {stateNotes.length >= 1 && (
+          <div
+            className="fixed bottom-16 right-4 bg-sky-500 p-4 rounded-full shadow-lg shadow-sky-500/50 z-10"
+            onClick={() => router.push("/addnote")}
+          >
+            <AiOutlinePlus className="text-2xl text-white" />
+          </div>
+        )}
 
-        <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">
-          {stateNotes.map((note) => (
-            <NoteCard
-              handleDeleteNote={handleDeleteNote}
-              key={note.id}
-              note={note}
-            />
-          ))}
-        </div>
+        {stateNotes.length < 1 ? (
+          <div className="mt-16  text-center">
+            <div className="flex justify-center">
+              <FaBoxOpen className="animate-bounce text-6xl" />
+            </div>
+            <h1 className="mt-2 text-xl">You list of notes is empty</h1>
+            <button
+              onClick={() => router.push("/addnote")}
+              className="mt-8 bg-sky-500 shadow shadow-sky-500/50 px-16 text-white text-lg font-bold mx-4 py-2 rounded"
+            >
+              Add new Note
+            </button>
+          </div>
+        ) : (
+          <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">
+            {stateNotes.map((note) => (
+              <NoteCard
+                handleDeleteNote={handleDeleteNote}
+                key={note.id}
+                note={note}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </>
   );
