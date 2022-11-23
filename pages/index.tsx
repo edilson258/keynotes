@@ -3,15 +3,17 @@ import { useRouter } from "next/router";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiTrashAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
+import INote from "../interfaces/INote";
+import { getAllUserNotes } from "../services/firebaseService";
 
-function NoteCard() {
+function NoteCard({ note }: { note: INote }) {
   return (
     <div className="text-slate-600 relative shadow p-4 pt-8 pb-1 rounded">
       <p className="absolute text-white font-bold bg-slate-700 px-1 top-0 left-0 rounded-tl rounded-br">
         1
       </p>
-      <h1 className="font-semibold text-2xl">Note Title</h1>
-      <p className="opacity-80">This is just the body of the note</p>
+      <h1 className="font-semibold text-2xl mb-2">{note.title}</h1>
+      <p className="opacity-80">{note.description}</p>
       <div className="text-xl border-t my-2 py-2 flex gap-2">
         <button className="px-3 border rounded text-red-500 border-red-500">
           <BiTrashAlt />
@@ -25,7 +27,7 @@ function NoteCard() {
   );
 }
 
-const Home = () => {
+const Home = ({ notes }: { notes: INote[] }) => {
   const router = useRouter();
 
   return (
@@ -45,14 +47,24 @@ const Home = () => {
         </div>
 
         <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">
-          <NoteCard />
-          <NoteCard />
-          <NoteCard />
-          <NoteCard />
+          {notes.map((note) => (
+            <NoteCard key={note.id} note={note} />
+          ))}
         </div>
       </main>
     </>
   );
 };
+
+const getServerSideProps = async () => {
+  const notes = await getAllUserNotes();
+  return {
+    props: {
+      notes,
+    },
+  };
+};
+
+export { getServerSideProps };
 
 export default Home;
