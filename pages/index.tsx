@@ -7,15 +7,18 @@ import { MdEdit } from "react-icons/md";
 import { FaBoxOpen } from "react-icons/fa";
 import INote from "../interfaces/INote";
 import { getAllUserNotes } from "../services/firebaseService";
+import type { NextRouter } from "next/router";
 
 function NoteCard({
   note,
   handleDeleteNote,
   index,
+  router,
 }: {
   note: INote;
   handleDeleteNote: (noteID: string) => void;
   index: number;
+  router: NextRouter;
 }) {
   return (
     <div className="text-slate-600 relative shadow p-4 pt-8 pb-1 rounded">
@@ -31,7 +34,10 @@ function NoteCard({
         >
           <BiTrashAlt />
         </button>
-        <button className="flex justify-center gap-1.5 items-center px-3 border rounded text-white bg-sky-400 border-sky-400">
+        <button
+          onClick={() => router.push(`/editnote/${note.id}`)}
+          className="flex justify-center gap-1.5 items-center px-3 border rounded text-white bg-sky-400 border-sky-400"
+        >
           Edit
           <MdEdit />
         </button>
@@ -92,6 +98,7 @@ const Home = ({ notes }: { notes: INote[] }) => {
           <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">
             {stateNotes.map((note, index) => (
               <NoteCard
+                router={router}
                 index={index + 1}
                 handleDeleteNote={handleDeleteNote}
                 key={note.id}

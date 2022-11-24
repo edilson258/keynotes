@@ -3,13 +3,27 @@ import {
   getFirestore,
   collection,
   getDocs,
+  getDoc,
   addDoc,
   deleteDoc,
   doc,
+  setDoc,
 } from "firebase/firestore";
 import { firebaseApp } from "../firebase/config";
 
 const db = getFirestore(firebaseApp);
+
+export async function getUserNote(noteID: string) {
+  const noteRef = doc(db, "notes", noteID);
+  const docSnap = await getDoc(noteRef);
+  const note: INote = {
+    id: noteID,
+    title: docSnap.get("title"),
+    description: docSnap.get("description"),
+    category: docSnap.get("category"),
+  };
+  return note;
+}
 
 export async function getAllUserNotes() {
   const notes: INote[] = [];
@@ -40,6 +54,22 @@ export async function saveNewUserNote(note: INote) {
     console.error(err);
     throw new Error("Failed to save new note to firebase");
   }
+}
+
+export async function updateUserNote(note: INote) {
+  if (!note.id) return null;
+  const noteRef = doc(db, "notes", note.id);
+
+  const noteData = {
+    title: note.title,
+    description: note.description,
+    category: note.category,
+  };
+  return setDoc(noteRef, noteData)
+    .then(() => true)
+    .catch(() => {
+      throw new Error("Failed to update note");
+    });
 }
 
 export async function deleteUserNote(noteID: string) {
