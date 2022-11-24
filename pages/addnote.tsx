@@ -1,7 +1,5 @@
 import { BiSave } from "react-icons/bi";
 import { FormEvent, useRef, useState } from "react";
-import INote from "../interfaces/INote";
-import { saveNewUserNote } from "../services/firebaseService";
 import { RotatingLines } from "react-loader-spinner";
 import { useRouter } from "next/router";
 
@@ -23,18 +21,26 @@ const AddNote = () => {
     const noteDescription = noteDescriptionRef.current?.value;
     const noteCategory = noteCategoryRef.current?.value;
 
-    if (!noteTitle || !noteDescription || !noteCategory) return;
+    if (!noteTitle || !noteDescription || !noteCategory) {
+      throw new Error("Provide note data");
+    }
 
-    const note: INote = {
-      title: noteTitle,
-      description: noteDescription,
-      category: noteCategory,
-    };
-
-    await saveNewUserNote(note);
-    setIsSavingNote(false);
-
-    router.push("/");
+    fetch("/api/notes/addnote", {
+      method: "POST",
+      body: JSON.stringify({
+        title: noteTitle,
+        description: noteDescription,
+        category: noteCategory,
+      }),
+    })
+      .then(() => null)
+      .catch(() => {
+        throw new Error("Failed to save note");
+      })
+      .finally(() => {
+        setIsSavingNote(false);
+        router.push("/");
+      });
   };
 
   return (

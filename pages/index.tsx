@@ -1,4 +1,3 @@
-import { async } from "@firebase/util";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -7,19 +6,21 @@ import { BiTrashAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 import { FaBoxOpen } from "react-icons/fa";
 import INote from "../interfaces/INote";
-import { deleteUserNote, getAllUserNotes } from "../services/firebaseService";
+import { getAllUserNotes } from "../services/firebaseService";
 
 function NoteCard({
   note,
   handleDeleteNote,
+  index,
 }: {
   note: INote;
   handleDeleteNote: (noteID: string) => void;
+  index: number;
 }) {
   return (
     <div className="text-slate-600 relative shadow p-4 pt-8 pb-1 rounded">
       <p className="absolute text-white font-bold bg-slate-700 px-1 top-0 left-0 rounded-tl rounded-br">
-        1
+        {index}
       </p>
       <h1 className="font-semibold text-2xl mb-2">{note.title}</h1>
       <p className="opacity-80">{note.description}</p>
@@ -46,7 +47,14 @@ const Home = ({ notes }: { notes: INote[] }) => {
   async function handleDeleteNote(noteID: string) {
     const newStateNotes = stateNotes.filter((note) => note.id !== noteID);
     setStateNotes(newStateNotes);
-    await deleteUserNote(noteID);
+
+    fetch(`/api/notes/deletenote?noteid=${noteID}`, {
+      method: "DELETE",
+    })
+      .then(() => null)
+      .catch(() => {
+        throw new Error("Failed to delete note");
+      });
   }
 
   return (
@@ -82,8 +90,9 @@ const Home = ({ notes }: { notes: INote[] }) => {
           </div>
         ) : (
           <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">
-            {stateNotes.map((note) => (
+            {stateNotes.map((note, index) => (
               <NoteCard
+                index={index + 1}
                 handleDeleteNote={handleDeleteNote}
                 key={note.id}
                 note={note}
