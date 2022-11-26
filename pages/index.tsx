@@ -124,8 +124,10 @@ const Home = ({ notes }: { notes: INote[] }) => {
             {stateNotes
               .filter(
                 (note) =>
-                  note.title.includes(seachTerm) ||
-                  note.description.includes(seachTerm)
+                  note.title.toLowerCase().includes(seachTerm.toLowerCase()) ||
+                  note.description
+                    .toLowerCase()
+                    .includes(seachTerm.toLowerCase())
               )
               .map((note, index) => (
                 <NoteCard
