@@ -7,8 +7,9 @@ A modern notes app
 ## Used Tecnologies
 
 - `Nextjs`
+- `NextAuth`
 - `Firebase`
-- `TailwinCSS`
+- `TailwindCSS`
 - `React Icons`
 - `React Loader Spinner`
 
@@ -19,6 +20,11 @@ A modern notes app
 - (U) User can edit a created note
 - (D) User can delete created note
 
-## Up Comming Features
+## Features
+- Search for NOTES
+- Authentication (0Auth)
 
-- Authentication
+## authentication
+- Username & Passowrd
+- Using Google
+- Using Github
