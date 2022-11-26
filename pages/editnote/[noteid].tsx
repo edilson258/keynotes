@@ -5,11 +5,12 @@ import { useRouter } from "next/router";
 import type { GetServerSidePropsContext } from "next";
 import { getUserNote } from "../../services/firebaseService";
 import INote from "../../interfaces/INote";
+import { getSession } from "next-auth/react";
 
-const AddNote = ({ note }: { note: INote }) => {
+const UpdateNote = ({ note }: { note: INote }) => {
   const router = useRouter();
 
-  const [isSavingNote, setIsSavingNote] = useState(false);
+  const [isUpdatingNote, setIsUpdatingNote] = useState(false);
 
   const noteTitleRef = useRef<HTMLInputElement>(null);
   const noteDescriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -18,7 +19,7 @@ const AddNote = ({ note }: { note: INote }) => {
   const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    setIsSavingNote(true);
+    setIsUpdatingNote(true);
 
     const noteTitle = noteTitleRef.current?.value;
     const noteDescription = noteDescriptionRef.current?.value;
@@ -39,10 +40,10 @@ const AddNote = ({ note }: { note: INote }) => {
     })
       .then(() => null)
       .catch(() => {
-        throw new Error("Failed to save note");
+        throw new Error("Failed to Update note");
       })
       .finally(() => {
-        setIsSavingNote(false);
+        setIsUpdatingNote(false);
         router.push("/");
       });
   };
@@ -108,9 +109,9 @@ const AddNote = ({ note }: { note: INote }) => {
         <button
           type="submit"
           className="disabled:opacity-50 flex justify-center gap-4 items-center text-white w-full bg-sky-500 rounded py-2 text-lg font-bold mt-8"
-          disabled={isSavingNote ? true : false}
+          disabled={isUpdatingNote ? true : false}
         >
-          {isSavingNote ? (
+          {isUpdatingNote ? (
             <>
               updating...
               <RotatingLines
@@ -134,6 +135,17 @@ const AddNote = ({ note }: { note: INote }) => {
 };
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  const session = await getSession({ req: context.req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/users/login",
+        permanent: false,
+      },
+    };
+  }
+
   const noteid = context.query.noteid?.toString();
 
   if (!noteid) throw new Error("Provide a note ID");
@@ -149,4 +161,4 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
 export { getServerSideProps };
 
-export default AddNote;
+export default UpdateNote;

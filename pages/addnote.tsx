@@ -2,6 +2,8 @@ import { BiSave } from "react-icons/bi";
 import { FormEvent, useRef, useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 
 const AddNote = () => {
   const router = useRouter();
@@ -128,5 +130,24 @@ const AddNote = () => {
     </div>
   );
 };
+
+const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/users/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
+
+export { getServerSideProps };
 
 export default AddNote;

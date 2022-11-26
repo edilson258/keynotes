@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiTrashAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
@@ -8,8 +8,11 @@ import { FaBoxOpen } from "react-icons/fa";
 import INote from "../interfaces/INote";
 import { getAllUserNotes } from "../services/firebaseService";
 import type { NextRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
+import Navbar from "../components/Navbar";
 
-function NoteCard({
+const NoteCard = ({
   note,
   handleDeleteNote,
   index,
@@ -19,7 +22,7 @@ function NoteCard({
   handleDeleteNote: (noteID: string) => void;
   index: number;
   router: NextRouter;
-}) {
+}) => {
   return (
     <div className="text-slate-600 relative shadow p-4 pt-8 pb-1 rounded">
       <p className="absolute text-white font-bold bg-slate-700 px-1 top-0 left-0 rounded-tl rounded-br">
@@ -44,13 +47,17 @@ function NoteCard({
       </div>
     </div>
   );
-}
+};
 
 const Home = ({ notes }: { notes: INote[] }) => {
   const [stateNotes, setStateNotes] = useState(notes);
+  const [isSeaching, setIsSearching] = useState(false);
+
   const router = useRouter();
 
   async function handleDeleteNote(noteID: string) {
+    // this operation can be cost resources
+
     const newStateNotes = stateNotes.filter((note) => note.id !== noteID);
     setStateNotes(newStateNotes);
 
@@ -63,16 +70,43 @@ const Home = ({ notes }: { notes: INote[] }) => {
       });
   }
 
+  function handleSearchInput(event: ChangeEvent<HTMLInputElement>) {
+    const newStateNotes = stateNotes.filter(function (note) {
+      return (
+        note.title.includes(event.target.value) ||
+        note.description.includes(event.target.value)
+      );
+    });
+
+    // filter on user screen
+  }
+
   return (
     <>
       <Head>
         <title>My Notes</title>
       </Head>
 
-      <main className="container relative mx-auto py-8 text-slate-700 max-h-vh">
-        <h1 className="text-center text-4xl font-bold">Key Notes</h1>
+      <Navbar />
 
+      <main className="container relative mx-auto py-8 text-slate-700 max-h-vh">
+        <h1 className="text-center text-2xl font-bold">Stay organized</h1>
         {stateNotes.length >= 1 && (
+          <div className="container mx-auto px-4 mt-8">
+            <div className="border pr-2 rounded">
+              <input
+                onFocus={() => setIsSearching(true)}
+                onBlur={() => setIsSearching(false)}
+                onChange={(e) => handleSearchInput(e)}
+                className="text-lg rounded w-full indent-4 py-2 focus:outline-none"
+                placeholder="search for a note"
+                type="search"
+              />
+            </div>
+          </div>
+        )}
+
+        {stateNotes.length >= 1 && !isSeaching && (
           <div
             className="fixed bottom-16 right-4 bg-sky-500 p-4 rounded-full shadow-lg shadow-sky-500/50 z-10"
             onClick={() => router.push("/addnote")}
@@ -112,7 +146,17 @@ const Home = ({ notes }: { notes: INote[] }) => {
   );
 };
 
-const getServerSideProps = async () => {
+const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req });
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/users/login",
+        permanent: false,
+      },
+    };
+  }
+
   const notes = await getAllUserNotes();
   return {
     props: {
