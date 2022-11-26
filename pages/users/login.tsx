@@ -68,7 +68,10 @@ const AddNote = () => {
           Signin with Google
         </div>
 
-        <div className="shadow py-2 select-none cursor-pointer mt-4 text-xl flex justify-center items-center gap-4 rounded">
+        <div
+          className="shadow py-2 select-none cursor-pointer mt-4 text-xl flex justify-center items-center gap-4 rounded"
+          onClick={() => signIn("github", { callbackUrl: "/" })}
+        >
           <BsGithub />
           Signin with Github
         </div>

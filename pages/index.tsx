@@ -51,6 +51,7 @@ const NoteCard = ({
 
 const Home = ({ notes }: { notes: INote[] }) => {
   const [stateNotes, setStateNotes] = useState(notes);
+  const [seachTerm, setSeachTerm] = useState("");
   const [isSeaching, setIsSearching] = useState(false);
 
   const router = useRouter();
@@ -70,17 +71,6 @@ const Home = ({ notes }: { notes: INote[] }) => {
       });
   }
 
-  function handleSearchInput(event: ChangeEvent<HTMLInputElement>) {
-    const newStateNotes = stateNotes.filter(function (note) {
-      return (
-        note.title.includes(event.target.value) ||
-        note.description.includes(event.target.value)
-      );
-    });
-
-    // filter on user screen
-  }
-
   return (
     <>
       <Head>
@@ -91,14 +81,15 @@ const Home = ({ notes }: { notes: INote[] }) => {
 
       <main className="container relative mx-auto py-8 text-slate-700 max-h-vh">
         <h1 className="text-center text-2xl font-bold">Stay organized</h1>
+
         {stateNotes.length >= 1 && (
-          <div className="container mx-auto px-4 mt-8">
-            <div className="border pr-2 rounded">
+          <div className="container mx-auto px-4 mt-8 max-w-full">
+            <div className="shadow border rounded">
               <input
                 onFocus={() => setIsSearching(true)}
                 onBlur={() => setIsSearching(false)}
-                onChange={(e) => handleSearchInput(e)}
-                className="text-lg rounded w-full indent-4 py-2 focus:outline-none"
+                onChange={(e) => setSeachTerm(e.target.value)}
+                className="text-lg rounded w-full indent-4 py-2 focus:outline-none pr-2"
                 placeholder="search for a note"
                 type="search"
               />
@@ -129,16 +120,22 @@ const Home = ({ notes }: { notes: INote[] }) => {
             </button>
           </div>
         ) : (
-          <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4">
-            {stateNotes.map((note, index) => (
-              <NoteCard
-                router={router}
-                index={index + 1}
-                handleDeleteNote={handleDeleteNote}
-                key={note.id}
-                note={note}
-              />
-            ))}
+          <div className="sm:container py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto px-4">
+            {stateNotes
+              .filter(
+                (note) =>
+                  note.title.includes(seachTerm) ||
+                  note.description.includes(seachTerm)
+              )
+              .map((note, index) => (
+                <NoteCard
+                  router={router}
+                  index={index + 1}
+                  handleDeleteNote={handleDeleteNote}
+                  key={note.id}
+                  note={note}
+                />
+              ))}
           </div>
         )}
       </main>
