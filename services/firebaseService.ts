@@ -14,32 +14,42 @@ import { firebaseApp } from "../firebase/config";
 const db = getFirestore(firebaseApp);
 
 export async function getUserNote(noteID: string) {
-  const noteRef = doc(db, "notes", noteID);
-  const docSnap = await getDoc(noteRef);
-  const note: INote = {
-    id: noteID,
-    title: docSnap.get("title"),
-    description: docSnap.get("description"),
-    category: docSnap.get("category"),
-  };
-  return note;
+  try {
+    const noteRef = doc(db, "notes", noteID);
+    const docSnap = await getDoc(noteRef);
+    const note: INote = {
+      id: noteID,
+      title: docSnap.get("title"),
+      description: docSnap.get("description"),
+      category: docSnap.get("category"),
+    };
+    return note;
+  } catch (err) {
+    console.error(err);
+    throw new Error("Failed to get user note");
+  }
 }
 
 export async function getAllUserNotes() {
-  const notes: INote[] = [];
+  try {
+    const notes: INote[] = [];
 
-  const querySnapshot = await getDocs(collection(db, "notes"));
-  for (let note of querySnapshot.docs) {
-    const newnote: INote = {
-      id: note.id,
-      title: note.get("title"),
-      description: note.get("description"),
-      category: note.get("category"),
-    };
-    notes.push(newnote);
+    const querySnapshot = await getDocs(collection(db, "notes"));
+    for (let note of querySnapshot.docs) {
+      const newnote: INote = {
+        id: note.id,
+        title: note.get("title"),
+        description: note.get("description"),
+        category: note.get("category"),
+      };
+      notes.push(newnote);
+    }
+
+    return notes;
+  } catch (err) {
+    console.error(err);
+    throw new Error("Failed to load user notes from firebase");
   }
-
-  return notes;
 }
 
 export async function saveNewUserNote(note: INote) {
