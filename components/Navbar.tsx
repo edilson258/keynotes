@@ -17,7 +17,7 @@ const Navbar = () => {
           <ul className="flex gap-4 items-center font-semibold text-md">
             <li
               onClick={() => signOut({ callbackUrl: "/users/login" })}
-              className="cursor-pointer select-none py-1 px-2 hover:text-sky-500 hover:scale-110 easy-in-out duration-200"
+              className="cursor-pointer select-none py-1 px-2 hover:text-red-500 hover:scale-110 easy-in-out duration-200"
             >
               Logout
             </li>

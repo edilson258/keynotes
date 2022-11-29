@@ -6,6 +6,7 @@ import type { GetServerSidePropsContext } from "next";
 import { getUserNote } from "../../services/firebaseService";
 import INote from "../../interfaces/INote";
 import { getSession } from "next-auth/react";
+import type { GetServerSideProps } from "next";
 
 const UpdateNote = ({ note }: { note: INote }) => {
   const router = useRouter();
@@ -25,7 +26,7 @@ const UpdateNote = ({ note }: { note: INote }) => {
     const noteDescription = noteDescriptionRef.current?.value;
     const noteCategory = noteCategoryRef.current?.value;
 
-    if (!noteTitle || !noteDescription || !noteCategory) {
+    if (!noteTitle) {
       throw new Error("Provide note data");
     }
 
@@ -101,6 +102,9 @@ const UpdateNote = ({ note }: { note: INote }) => {
           id="category"
           className="focus:outline-2 px-2 text-slate-700 font-bold focus:outline-sky-500 bg-white py-3 border shadow rounded w-full"
         >
+          <option selected disabled hidden>
+            Choose category
+          </option>
           <option value="school">School</option>
           <option value="work">Work</option>
           <option value="life">Life</option>
@@ -134,7 +138,9 @@ const UpdateNote = ({ note }: { note: INote }) => {
   );
 };
 
-const getServerSideProps = async (context: GetServerSidePropsContext) => {
+const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const session = await getSession({ req: context.req });
 
   if (!session) {

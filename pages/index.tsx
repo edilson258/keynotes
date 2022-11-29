@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiTrashAlt } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";

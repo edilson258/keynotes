@@ -1,13 +1,10 @@
-import { FormEvent, useRef, useState } from "react";
-import { useRouter } from "next/router";
+import { FormEvent, useRef } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
 import { signIn } from "next-auth/react";
 
-const AddNote = () => {
-  const router = useRouter();
-
-  const usernameRef = useRef<HTMLInputElement>(null);
+const LoginForm = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const handleFormSubmit = async (e: FormEvent) => {
@@ -22,15 +19,16 @@ const AddNote = () => {
           className="block mb-2 text-lg text-slate-500 font-bold text-md font-bold"
           htmlFor="username"
         >
-          Username
+          Email
         </label>
 
         <input
-          ref={usernameRef}
+          ref={emailRef}
+          type="email"
           required
           minLength={8}
-          placeholder="Aa"
-          className="focus:shadow-outline-lg focus:border-none focus:outline-sky-500 shadow font-semibold text-lg appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-loose mb-6"
+          placeholder="john@example.com"
+          className="focus:shadow-outline-lg focus:border-none focus:outline-sky-500 shadow font-semibold text-md appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-loose mb-6"
           id="username"
         />
 
@@ -80,4 +78,4 @@ const AddNote = () => {
   );
 };
 
-export default AddNote;
+export default LoginForm;

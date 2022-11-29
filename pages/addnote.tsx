@@ -23,7 +23,7 @@ const AddNote = () => {
     const noteDescription = noteDescriptionRef.current?.value;
     const noteCategory = noteCategoryRef.current?.value;
 
-    if (!noteTitle || !noteDescription || !noteCategory) {
+    if (!noteTitle) {
       setIsSavingNote(false);
       throw new Error("Provide note data");
     }
@@ -98,6 +98,9 @@ const AddNote = () => {
           id="category"
           className="focus:outline-2 px-2 text-slate-700 font-bold focus:outline-sky-500 bg-white py-3 border shadow rounded w-full"
         >
+          <option selected disabled hidden>
+            Choose category
+          </option>
           <option value="school">School</option>
           <option value="work">Work</option>
           <option value="life">Life</option>
