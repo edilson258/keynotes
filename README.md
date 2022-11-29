@@ -21,10 +21,23 @@ A modern notes app
 - (D) User can delete created note
 
 ## Features
+
 - Search for NOTES
 - Authentication (0Auth)
 
-## authentication
+## Authentication
+
 - Username & Passowrd
 - Using Google
 - Using Github
+
+## Installation
+
+- Linux
+
+```bash
+  git clone https://github.com/edilson258/keynotes.git
+  cd keynotes
+  yarn
+  yarn run dev
+```
